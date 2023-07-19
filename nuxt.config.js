@@ -1,5 +1,9 @@
 import { defineNuxtConfig } from '@nuxt/bridge'
 export default defineNuxtConfig({
+  nitro: {
+    preset: 'aws-lambda',
+    serveStatic: false,
+  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'nuxt-bridge-aws',

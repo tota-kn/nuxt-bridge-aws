@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  NuxtBridgeApiGateway:
+    Type: AWS::Serverless::Api
+    DependsOn:
+    - NuxtBridgeLambda
+    Properties:
+      StageName: dev
+      EndpointConfiguration: REGIONAL
+      DefinitionBody:
+        swagger: '2.0'
+        info:
+          title: Nuxt Bridge Api Gateway
+        paths:
+          /{proxy+}:
+            get:
+              response:
+                '200':
+                  description: 200 response
+                  scheme:
+                    $ref: '#/definitions/Empty'
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${NuxtBridgeLambda.Arn}/invocations
+    Metadata:
+      SamResourceId: NuxtBridgeApiGateway
+  NuxtBridgeLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: nuxt_bridge_lambda
+      Runtime: nodejs18.x
+      CodeUri: s3://iwato-deploy/a3a9df4df2f2c820be5046cb5bd70e4d
+      Handler: index.handler
+      Events:
+        MyApi:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+    Metadata:
+      SamResourceId: NuxtBridgeLambda

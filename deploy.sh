@@ -1,0 +1,2 @@
+sam package --template-file template.yml --s3-bucket iwato-deploy  --output-template-file packaged-template.yml
+sam deploy --template-file packaged-template.yml --stack-name nuxt-bridge-aws --capabilities CAPABILITY_IAM
